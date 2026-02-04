@@ -8,10 +8,6 @@ import { UIOverlay } from "./ui/UIOverlay";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#render-canvas");
 
-if (typeof window !== "undefined") {
-  (window as typeof window & { global?: typeof window }).global = window;
-}
-
 if (!canvas) {
   throw new Error("Render canvas not found");
 }
