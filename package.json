@@ -14,7 +14,7 @@
     "@babylonjs/core": "^7.14.0",
     "@babylonjs/gui": "^7.14.0",
     "ammojs-typed": "^1.0.6",
-    "simple-peer": "^9.11.1"
+    "peerjs": "^1.5.4"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

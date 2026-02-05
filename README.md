@@ -26,7 +26,7 @@ Open `http://localhost:4173` to explore the scene. Use **WASD** or arrow keys to
 - `src/fishing`: Fish spawning, rarity, and catch handling.
 - `src/progression`: Upgrade and economy balancing logic.
 - `src/quiz`: Knowledge quiz and temporary boosts.
-- `src/network`: Peer-to-peer sync scaffolding.
+- `src/network`: PeerJS-based peer-to-peer sync scaffolding.
 - `src/ui`: Minimal HUD overlay.
 
 ## Next Steps
