@@ -104,6 +104,7 @@ export class GameEngine {
 
   private async enablePhysics() {
     const ammo = await Ammo();
+    (globalThis as typeof globalThis & { Ammo?: typeof ammo }).Ammo = ammo;
     this.scene.enablePhysics(new Vector3(0, -9.81, 0), new AmmoJSPlugin(true, ammo));
   }
 }
