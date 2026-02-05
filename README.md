@@ -1,6 +1,6 @@
 # Fishtopia 3D
 
-A cozy, low-pressure multiplayer 3D fishing and exploration prototype built with Babylon.js, Ammo.js physics, and WebRTC-style peer networking.
+A cozy, low-pressure multiplayer 3D fishing and exploration prototype built as a fully static site. The experience runs directly in a browser using Babylon.js for rendering, Ammo.js for physics, and PeerJS for lightweight peer-to-peer networking.
 
 ## Features
 
@@ -8,26 +8,23 @@ A cozy, low-pressure multiplayer 3D fishing and exploration prototype built with
 - **Relaxed fishing loop** with visible fish schools, rarity tiers, and satisfying currency rewards.
 - **Knowledge quiz boosts** that reward streaks and increase catching efficiency.
 - **Upgradeable progression** for movement, luck, and depth access.
-- **Modular architecture** for world generation, fish spawning, progression, quiz logic, and networking.
+- **PeerJS P2P scaffolding** for syncing player state in small co-op sessions.
 
-## Getting Started
+## Running Locally
+
+Because this is a static project, you can open `index.html` directly or serve the folder with any static file server.
 
 ```bash
-npm install
-npm run dev
+python3 -m http.server 4173
 ```
 
 Open `http://localhost:4173` to explore the scene. Use **WASD** or arrow keys to move. Press **Q** to answer a quiz question for a boost.
 
 ## Project Structure
 
-- `src/engine`: Babylon.js bootstrapping, physics, and player controller.
-- `src/world`: Biome layout, islands, and travel hubs.
-- `src/fishing`: Fish spawning, rarity, and catch handling.
-- `src/progression`: Upgrade and economy balancing logic.
-- `src/quiz`: Knowledge quiz and temporary boosts.
-- `src/network`: PeerJS-based peer-to-peer sync scaffolding.
-- `src/ui`: Minimal HUD overlay.
+- `index.html`: Static entry point with CDN scripts.
+- `styles.css`: UI styling.
+- `app.js`: Babylon.js scene setup, systems, and gameplay loop.
 
 ## Next Steps
 
