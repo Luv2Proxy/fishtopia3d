@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fishtopia 3D</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/ammo.js@0.0.10/ammo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babylonjs/core@7.14.0/babylon.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="render-canvas"></canvas>
+      <div id="ui">
+        <div class="logo">Fishtopia 3D</div>
+        <div class="subtitle">Cozy multiplayer fishing & exploration</div>
+        <div class="hud">
+          <div>Currency: <span id="currency">0</span></div>
+          <div>Boost: <span id="boost">None</span></div>
+          <div>Biome: <span id="biome">Starter Shoals</span></div>
+        </div>
+        <div class="controls">
+          <div><strong>Move:</strong> WASD / Arrow keys</div>
+          <div><strong>Quiz:</strong> Press Q</div>
+        </div>
+      </div>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>
