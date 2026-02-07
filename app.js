@@ -345,7 +345,7 @@ const startApp = () => {
     }
   });
 
-  if (window.Ammo) {
+  if (typeof window.Ammo === "function") {
     window
       .Ammo()
       .then((ammo) => {
