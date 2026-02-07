@@ -1,25 +1,36 @@
-const canvas = document.getElementById("render-canvas");
+const startApp = () => {
+  const canvas = document.getElementById("render-canvas");
 
-if (!canvas) {
-  throw new Error("Render canvas not found");
-}
+  if (!canvas) {
+    throw new Error("Render canvas not found");
+  }
 
-const ui = {
-  currency: document.getElementById("currency"),
-  boost: document.getElementById("boost"),
-  biome: document.getElementById("biome"),
-  setCurrency(value) {
-    if (this.currency) this.currency.textContent = value.toFixed(0);
-  },
-  setBoost(value) {
-    if (this.boost) this.boost.textContent = value;
-  },
-  setBiome(value) {
-    if (this.biome) this.biome.textContent = value;
-  },
-};
+  if (!window.BABYLON) {
+    const status = document.getElementById("status");
+    if (status) status.textContent = "Babylon.js failed to load. Check your connection.";
+    return;
+  }
 
-const progression = {
+  const ui = {
+    currency: document.getElementById("currency"),
+    boost: document.getElementById("boost"),
+    biome: document.getElementById("biome"),
+    status: document.getElementById("status"),
+    setCurrency(value) {
+      if (this.currency) this.currency.textContent = value.toFixed(0);
+    },
+    setBoost(value) {
+      if (this.boost) this.boost.textContent = value;
+    },
+    setBiome(value) {
+      if (this.biome) this.biome.textContent = value;
+    },
+    setStatus(value) {
+      if (this.status) this.status.textContent = value;
+    },
+  };
+
+  const progression = {
   currency: 0,
   passiveIncomeTimer: 0,
   upgrades: [
@@ -54,7 +65,7 @@ const progression = {
   },
 };
 
-const quiz = {
+  const quiz = {
   questions: [
     { prompt: "What planet is known as the Red Planet?", answer: "mars", reward: "Lucky Streak" },
     { prompt: "Which ocean is the largest on Earth?", answer: "pacific", reward: "Catch Speed" },
@@ -98,7 +109,7 @@ const quiz = {
   },
 };
 
-const world = {
+  const world = {
   biomes: [
     { name: "Starter Shoals", color: new BABYLON.Color3(0.45, 0.83, 0.6), center: new BABYLON.Vector3(0, 0, 0) },
     { name: "Coral Reef", color: new BABYLON.Color3(0.9, 0.55, 0.65), center: new BABYLON.Vector3(40, 0, 20) },
@@ -151,7 +162,7 @@ const world = {
   },
 };
 
-const fishSystem = {
+  const fishSystem = {
   fishTypes: [
     { name: "Sunny Sardine", rarity: "common", color: new BABYLON.Color3(0.95, 0.85, 0.35), value: 6, speed: 0.6 },
     { name: "Coral Snapper", rarity: "uncommon", color: new BABYLON.Color3(0.95, 0.5, 0.6), value: 12, speed: 0.7 },
@@ -208,7 +219,7 @@ const fishSystem = {
   },
 };
 
-const network = {
+  const network = {
   peer: null,
   connections: new Map(),
   remotePlayers: new Map(),
@@ -275,97 +286,119 @@ const network = {
   },
 };
 
-const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
-const scene = new BABYLON.Scene(engine);
-scene.clearColor = new BABYLON.Color3(0.68, 0.88, 0.98).toColor4();
+  const engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+  const scene = new BABYLON.Scene(engine);
+  scene.clearColor = new BABYLON.Color3(0.68, 0.88, 0.98).toColor4();
 
-const camera = new BABYLON.ArcRotateCamera(
-  "camera",
-  Math.PI * 0.25,
-  Math.PI * 0.38,
-  48,
-  new BABYLON.Vector3(0, 4, 0),
-  scene,
-);
-camera.attachControl(canvas, true);
+  const camera = new BABYLON.ArcRotateCamera(
+    "camera",
+    Math.PI * 0.25,
+    Math.PI * 0.38,
+    48,
+    new BABYLON.Vector3(0, 4, 0),
+    scene,
+  );
+  camera.attachControl(canvas, true);
 
-const light = new BABYLON.HemisphericLight("skyLight", new BABYLON.Vector3(0.5, 1, 0.2), scene);
-light.intensity = 0.8;
+  const light = new BABYLON.HemisphericLight(
+    "skyLight",
+    new BABYLON.Vector3(0.5, 1, 0.2),
+    scene,
+  );
+  light.intensity = 0.8;
 
-const ocean = BABYLON.MeshBuilder.CreateGround("ocean", { width: 600, height: 600 }, scene);
-const waterMaterial = new BABYLON.StandardMaterial("water", scene);
-waterMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.65, 0.88);
-waterMaterial.specularColor = new BABYLON.Color3(0.6, 0.8, 0.9);
-ocean.material = waterMaterial;
-ocean.position.y = -2;
+  const ocean = BABYLON.MeshBuilder.CreateGround("ocean", { width: 600, height: 600 }, scene);
+  const waterMaterial = new BABYLON.StandardMaterial("water", scene);
+  waterMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.65, 0.88);
+  waterMaterial.specularColor = new BABYLON.Color3(0.6, 0.8, 0.9);
+  ocean.material = waterMaterial;
+  ocean.position.y = -2;
 
-const player = BABYLON.MeshBuilder.CreateCapsule("player", { height: 2, radius: 0.5 }, scene);
-const playerMaterial = new BABYLON.StandardMaterial("playerMat", scene);
-playerMaterial.diffuseColor = new BABYLON.Color3(0.9, 0.7, 0.3);
-player.material = playerMaterial;
-player.position = new BABYLON.Vector3(0, 1, 0);
+  const player = BABYLON.MeshBuilder.CreateCapsule("player", { height: 2, radius: 0.5 }, scene);
+  const playerMaterial = new BABYLON.StandardMaterial("playerMat", scene);
+  playerMaterial.diffuseColor = new BABYLON.Color3(0.9, 0.7, 0.3);
+  player.material = playerMaterial;
+  player.position = new BABYLON.Vector3(0, 1, 0);
 
-const input = { forward: false, backward: false, left: false, right: false };
-scene.onKeyboardObservable.add(({ event, type }) => {
-  const isDown = type === 1;
-  switch (event.key.toLowerCase()) {
-    case "w":
-    case "arrowup":
-      input.forward = isDown;
-      break;
-    case "s":
-    case "arrowdown":
-      input.backward = isDown;
-      break;
-    case "a":
-    case "arrowleft":
-      input.left = isDown;
-      break;
-    case "d":
-    case "arrowright":
-      input.right = isDown;
-      break;
-    default:
-      break;
-  }
-});
+  const input = { forward: false, backward: false, left: false, right: false };
+  scene.onKeyboardObservable.add(({ event, type }) => {
+    const isDown = type === 1;
+    switch (event.key.toLowerCase()) {
+      case "w":
+      case "arrowup":
+        input.forward = isDown;
+        break;
+      case "s":
+      case "arrowdown":
+        input.backward = isDown;
+        break;
+      case "a":
+      case "arrowleft":
+        input.left = isDown;
+        break;
+      case "d":
+      case "arrowright":
+        input.right = isDown;
+        break;
+      default:
+        break;
+    }
+  });
 
-Ammo().then((ammo) => {
-  window.Ammo = ammo;
-  scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.AmmoJSPlugin(true, ammo));
-});
-
-world.build(scene);
-fishSystem.build(scene);
-quiz.initialize();
-network.initialize();
-ui.setCurrency(progression.currency);
-ui.setBoost("None");
-
-engine.runRenderLoop(() => {
-  const delta = engine.getDeltaTime() / 1000;
-  const direction = new BABYLON.Vector3(0, 0, 0);
-  if (input.forward) direction.z += 1;
-  if (input.backward) direction.z -= 1;
-  if (input.left) direction.x -= 1;
-  if (input.right) direction.x += 1;
-
-  if (direction.lengthSquared() > 0) {
-    direction.normalize();
-    const stats = progression.getMovementStats();
-    const velocity = direction.scale(stats.speed + stats.swimBoost);
-    player.position.addInPlace(velocity.scale(delta));
+  if (window.Ammo) {
+    window
+      .Ammo()
+      .then((ammo) => {
+        window.Ammo = ammo;
+        scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.AmmoJSPlugin(true, ammo));
+        ui.setStatus("Physics online.");
+      })
+      .catch(() => {
+        ui.setStatus("Physics unavailable, running without Ammo.");
+      });
+  } else {
+    ui.setStatus("Physics unavailable, running without Ammo.");
   }
 
-  camera.target = player.position;
-  world.update(player.position);
-  fishSystem.update(delta, player.position);
-  progression.update(delta);
-  quiz.update(delta);
-  network.update(delta, { position: player.position, velocity: direction });
-  scene.render();
-});
+  world.build(scene);
+  fishSystem.build(scene);
+  quiz.initialize();
+  network.initialize();
+  ui.setCurrency(progression.currency);
+  ui.setBoost("None");
+  ui.setStatus("Exploring Starter Shoals.");
 
-window.addEventListener("resize", () => {
-  engine.resize();
-});
+  engine.runRenderLoop(() => {
+    const delta = engine.getDeltaTime() / 1000;
+    const direction = new BABYLON.Vector3(0, 0, 0);
+    if (input.forward) direction.z += 1;
+    if (input.backward) direction.z -= 1;
+    if (input.left) direction.x -= 1;
+    if (input.right) direction.x += 1;
+
+    if (direction.lengthSquared() > 0) {
+      direction.normalize();
+      const stats = progression.getMovementStats();
+      const velocity = direction.scale(stats.speed + stats.swimBoost);
+      player.position.addInPlace(velocity.scale(delta));
+    }
+
+    camera.target = player.position;
+    world.update(player.position);
+    fishSystem.update(delta, player.position);
+    progression.update(delta);
+    quiz.update(delta);
+    network.update(delta, { position: player.position, velocity: direction });
+    scene.render();
+  });
+
+  window.addEventListener("resize", () => {
+    engine.resize();
+  });
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", startApp);
+} else {
+  startApp();
+}
